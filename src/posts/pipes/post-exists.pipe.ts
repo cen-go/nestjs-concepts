@@ -11,9 +11,9 @@ export class PostExistsPipe implements PipeTransform {
   constructor(private readonly postService: PostsService) {}
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  transform(value: number, metadata: ArgumentMetadata) {
+  async transform(value: string, metadata: ArgumentMetadata) {
     try {
-      this.postService.findPostById(value);
+      await this.postService.findPostById(value);
     } catch {
       throw new NotFoundException(`Post with ID:${value} not found.`);
     }
