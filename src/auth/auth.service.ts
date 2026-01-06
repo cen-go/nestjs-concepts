@@ -126,6 +126,19 @@ export class AuthService {
     }
   }
 
+  // Find current user by ID
+  async getUserById(id: string) {
+    const user = await this.userRepository.findOneBy({ id });
+
+    if (!user) {
+      throw new UnauthorizedException('User not found!');
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...result } = user;
+    return result;
+  }
+
   private generateAccessToken(user: User): string {
     const payload = {
       email: user.email,
@@ -138,8 +151,6 @@ export class AuthService {
       expiresIn: '15m',
     });
   }
-
-  // Find current user by ID
 
   private generateRefreshToken(user: User): string {
     const payload = {
