@@ -7,11 +7,21 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Post } from './posts/entities/post.entity';
 import { AuthModule } from './auth/auth.module';
 import { User } from './auth/entities/user.entity';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     PostsModule,
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 1000 * 60,
+          limit: 10,
+        },
+      ],
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -25,6 +35,12 @@ import { User } from './auth/entities/user.entity';
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}
