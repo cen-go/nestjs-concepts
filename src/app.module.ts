@@ -9,11 +9,15 @@ import { AuthModule } from './auth/auth.module';
 import { User } from './auth/entities/user.entity';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { CacheModule } from '@nestjs/cache-manager';
+import { FileUploadModule } from './file-upload/file-upload.module';
+import { File } from './file-upload/entities/file.entity';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     PostsModule,
+    CacheModule.register({ isGlobal: true, ttl: 30000 }),
     ThrottlerModule.forRoot({
       throttlers: [
         {
@@ -30,9 +34,10 @@ import { APP_GUARD } from '@nestjs/core';
       password: process.env.DB_PASSWORD,
       database: 'nestjs_concepts',
       synchronize: true, // just for development, don't use in production
-      entities: [Post, User],
+      entities: [Post, User, File],
     }),
     AuthModule,
+    FileUploadModule,
   ],
   controllers: [AppController],
   providers: [

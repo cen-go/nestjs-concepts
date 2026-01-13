@@ -18,17 +18,15 @@ import { PostExistsPipe } from './pipes/post-exists.pipe';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { User } from 'src/auth/entities/user.entity';
+import { FindPostsQueryDto } from './dto/find-posts-query.dto';
 
 @Controller('posts')
 export class PostsController {
   constructor(private readonly postService: PostsService) {}
 
   @Get()
-  getPosts(@Query('search') search: string) {
-    if (search) {
-      return this.postService.searchPost(search);
-    }
-    return this.postService.findAll();
+  getPosts(@Query() query: FindPostsQueryDto) {
+    return this.postService.findAll(query);
   }
 
   @Get(':id')
