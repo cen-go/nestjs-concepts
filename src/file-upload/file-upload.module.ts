@@ -11,7 +11,7 @@ import { memoryStorage } from 'multer';
   imports: [
     TypeOrmModule.forFeature([File]),
     CloudinaryModule,
-    MulterModule.register({ storage: memoryStorage }),
+    MulterModule.register({ storage: memoryStorage() }),
   ],
   controllers: [FileUploadController],
   providers: [FileUploadService],

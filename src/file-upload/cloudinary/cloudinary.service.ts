@@ -20,6 +20,7 @@ export class CloudinaryService {
       );
 
       // Convert file buffer to a readable stream and pipe to the uploadStream
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       streamifier.createReadStream(file.buffer).pipe(uploadStream);
     });
   }
