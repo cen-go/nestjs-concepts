@@ -1,9 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { LogingInterceptor } from './common/interceptors/loging.interceptor';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: ['error', 'warn', 'debug', 'log', 'verbose'],
+  });
 
   // Validating incoming request bodies automatically
   app.useGlobalPipes(
@@ -14,6 +17,8 @@ async function bootstrap() {
       disableErrorMessages: false, // If set to true, validation errors will not be returned to the client.
     }),
   );
+
+  app.useGlobalInterceptors(new LogingInterceptor());
 
   await app.listen(process.env.PORT ?? 3000);
 }
