@@ -10,12 +10,14 @@ import { RegisterDto } from './dto/register.dto';
 import bcrypt from 'bcryptjs';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
+import { UserEventsService } from 'src/events/user-events.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
     private jwtService: JwtService,
+    private readonly userEventsService: UserEventsService,
   ) {}
 
   async register(registerData: RegisterDto) {
@@ -38,6 +40,10 @@ export class AuthService {
     });
 
     const savedUser = await this.userRepository.save(newUser);
+
+    // Emit the user.registered event
+    this.userEventsService.emitUserRegistered(savedUser);
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...result } = savedUser;
 
